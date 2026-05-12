@@ -1,0 +1,417 @@
+import QtQuick
+import QtQuick.Layouts
+import Quickshell.Io
+import Quickshell
+import qs.modules.common.functions
+import qs.services
+import qs.modules.common
+import qs.modules.common.widgets
+import qs.modules.common.models.hyprland
+
+ColumnLayout {
+    id: page
+    spacing: 30
+    width: parent ? parent.width : implicitWidth
+
+    // ── Options ──────────────────────────────────────────────────────────────
+    HyprlandConfigOption { id: rounding;      key: "decoration:rounding" }
+    HyprlandConfigOption { id: blurEnabled;   key: "decoration:blur:enabled" }
+    HyprlandConfigOption { id: blurSize;      key: "decoration:blur:size" }
+    HyprlandConfigOption { id: blurPasses;    key: "decoration:blur:passes" }
+    HyprlandConfigOption { id: shadowEnabled; key: "decoration:shadow:enabled" }
+    HyprlandConfigOption { id: shadowRange;   key: "decoration:shadow:range" }
+    HyprlandConfigOption { id: borderSize;    key: "general:border_size" }
+    HyprlandConfigOption { id: gapsIn;        key: "general:gaps_in" }
+    HyprlandConfigOption { id: gapsOut;       key: "general:gaps_out" }
+    HyprlandConfigOption { id: animEnabled;   key: "animations:enabled" }
+    HyprlandConfigOption { id: activeBorder;  key: "general:col.active_border" }
+    HyprlandConfigOption { id: inactiveBorder;key: "general:col.inactive_border" }
+    HyprlandConfigOption { id: activeOpacity; key: "decoration:active_opacity" }
+    HyprlandConfigOption { id: inactiveOpacity; key: "decoration:inactive_opacity" }
+    HyprlandConfigOption { id: fullscreenOpacity; key: "decoration:fullscreen_opacity" }
+    HyprlandConfigOption { id: layout;        key: "general:layout" }
+    HyprlandConfigOption { id: kbLayout;      key: "input:kb_layout" }
+    HyprlandConfigOption { id: numlock;       key: "input:numlock_by_default" }
+    HyprlandConfigOption { id: repeatDelay;   key: "input:repeat_delay" }
+    HyprlandConfigOption { id: repeatRate;    key: "input:repeat_rate" }
+    HyprlandConfigOption { id: followMouse;   key: "input:follow_mouse" }
+    HyprlandConfigOption { id: naturalScroll; key: "input:touchpad:natural_scroll" }
+    HyprlandConfigOption { id: disableTyping; key: "input:touchpad:disable_while_typing" }
+    HyprlandConfigOption { id: scrollFactor;  key: "input:touchpad:scroll_factor" }
+    HyprlandConfigOption { id: clickfinger;   key: "input:touchpad:clickfinger_behavior" }
+    MonitorConfigOption  { id: monitorConfig }
+
+    // ── Animation presets ────────────────────────────────────────────────────
+    property string presetFast: `animations {
+  bezier = pc_wobble, 0.15, 1.15, 0.35, 1.0
+  bezier = pc_decel, 0.05, 0.9, 0.1, 1.05
+  bezier = pc_accel, 0.3, 0, 0.8, 0.15
+  animation = windowsIn, 1, 5, pc_wobble, slide
+  animation = windowsOut, 1, 5, pc_accel, slide
+  animation = windowsMove, 1, 5, pc_decel, slide
+  animation = fadeIn, 1, 4, default
+  animation = fadeOut, 1, 4, default
+  animation = layersIn, 1, 4, pc_decel, slide
+  animation = layersOut, 1, 4, pc_accel, slide
+  animation = workspaces, 1, 6, pc_decel, slide
+  animation = specialWorkspaceIn, 1, 2, pc_wobble, slidevert
+  animation = specialWorkspaceOut, 1, 2, pc_accel, slidevert
+}`
+
+    property string presetNormal: `animations {
+  bezier = emphasizedDecel, 0.05, 0.7, 0.1, 1
+  bezier = emphasizedAccel, 0.3, 0, 0.8, 0.15
+  bezier = menu_decel, 0.1, 1, 0, 1
+  bezier = menu_accel, 0.52, 0.03, 0.72, 0.08
+  bezier = stall, 1, -0.1, 0.7, 0.85
+  animation = windowsIn, 1, 3, emphasizedDecel, popin 80%
+  animation = fadeIn, 1, 3, emphasizedDecel
+  animation = windowsOut, 1, 2, emphasizedDecel, popin 90%
+  animation = fadeOut, 1, 2, emphasizedDecel
+  animation = windowsMove, 1, 3, emphasizedDecel, slide
+  animation = border, 1, 10, emphasizedDecel
+  animation = layersIn, 1, 2.7, emphasizedDecel, popin 93%
+  animation = layersOut, 1, 2.4, menu_accel, popin 94%
+  animation = fadeLayersIn, 1, 0.5, menu_decel
+  animation = fadeLayersOut, 1, 2.7, stall
+  animation = workspaces, 1, 7, menu_decel, slide
+  animation = specialWorkspaceIn, 1, 2.8, emphasizedDecel, slidevert
+  animation = specialWorkspaceOut, 1, 1.2, emphasizedAccel, slidevert
+}`
+
+    property string presetNiri: `animations {
+  bezier = niri_wobble, 0.15, 1.15, 0.35, 1.0
+  bezier = niri_decel, 0.05, 0.9, 0.1, 1.05
+  bezier = niri_accel, 0.3, 0, 0.8, 0.15
+  animation = windowsIn, 1, 5, niri_wobble, slide
+  animation = windowsOut, 1, 5, niri_accel, slide
+  animation = windowsMove, 1, 5, niri_decel, slide
+  animation = fadeIn, 1, 4, default
+  animation = fadeOut, 1, 4, default
+  animation = layersIn, 1, 4, niri_decel, slide
+  animation = layersOut, 1, 4, niri_accel, slide
+  animation = workspaces, 1, 6, niri_decel, slidevert
+  animation = specialWorkspaceIn, 1, 4, niri_wobble, slidevert
+  animation = specialWorkspaceOut, 1, 4, niri_accel, slidevert
+}`
+
+    // ── Layout ───────────────────────────────────────────────────────────────
+    ContentSection {
+        icon: "auto_awesome_mosaic"
+        shape: MaterialShape.Shape.Gem
+        title: Translation.tr("Layout")
+
+        ContentSubsection {
+            title: Translation.tr("Tiling Layout")
+            ConfigSelectionArray {
+                currentValue: layout.value ?? "dwindle"
+                onSelected: newValue => HyprlandConfig.set("general:layout", newValue)
+                options: [
+                    { displayName: Translation.tr("Dwindle"),   icon: "browse",             value: "dwindle"   },
+                    { displayName: Translation.tr("Master"),    icon: "auto_awesome_mosaic", value: "master"    },
+                    { displayName: Translation.tr("Scrolling"), icon: "view_carousel",       value: "scrolling" },
+                ]
+            }
+        }
+    }
+
+    // ── Input ────────────────────────────────────────────────────────────────
+    ContentSection {
+        icon: "trackpad_input"
+        shape: MaterialShape.Shape.Pentagon
+        title: Translation.tr("Input")
+
+        ContentSubsection {
+            title: Translation.tr("Keyboard")
+
+            MaterialTextArea {
+                id: kbLayoutTextArea
+                Layout.fillWidth: true
+                placeholderText: Translation.tr("Keyboard layout (e.g., us, es, latam)")
+                wrapMode: TextEdit.NoWrap
+                text: kbLayout.value ?? ""
+                Connections {
+                    target: kbLayout
+                    function onValueChanged() {
+                        if (kbLayoutTextArea.text !== kbLayout.value)
+                            kbLayoutTextArea.text = kbLayout.value ?? ""
+                    }
+                }
+                Timer {
+                    id: kbLayoutDebounceTimer
+                    interval: 1000
+                    running: false
+                    onTriggered: if (kbLayout.ready) HyprlandConfig.set("input:kb_layout", kbLayoutTextArea.text)
+                }
+                onTextChanged: if (kbLayout.ready) kbLayoutDebounceTimer.restart()
+            }
+
+            ConfigSwitch {
+                buttonIcon: "numbers"
+                text: Translation.tr("Numlock by default")
+                checked: numlock.value === 1
+                onCheckedChanged: {
+                    const newValue = checked ? 1 : 0
+                    if (numlock.ready && numlock.value !== newValue) HyprlandConfig.set("input:numlock_by_default", newValue)
+                }
+            }
+
+            ConfigSpinBox {
+                icon: "keyboard_return"
+                text: Translation.tr("Repeat delay (ms)")
+                value: repeatDelay.value ?? 250
+                from: 100; to: 1000; stepSize: 10
+                onValueChanged: if (repeatDelay.ready && repeatDelay.value !== value) HyprlandConfig.set("input:repeat_delay", value)
+            }
+
+            ConfigSpinBox {
+                icon: "speed"
+                text: Translation.tr("Repeat rate")
+                value: repeatRate.value ?? 35
+                from: 10; to: 100; stepSize: 1
+                onValueChanged: if (repeatRate.ready && repeatRate.value !== value) HyprlandConfig.set("input:repeat_rate", value)
+            }
+
+            ConfigSelectionArray {
+                currentValue: followMouse.value ?? 1
+                onSelected: newValue => HyprlandConfig.set("input:follow_mouse", newValue)
+                options: [
+                    { displayName: Translation.tr("Disabled"), icon: "mouse",    value: 0 },
+                    { displayName: Translation.tr("Full"),     icon: "open_with", value: 1 },
+                    { displayName: Translation.tr("Loose"),    icon: "drag_pan",  value: 2 },
+                    { displayName: Translation.tr("Explicit"), icon: "ads_click", value: 3 },
+                ]
+            }
+        }
+
+        ContentSubsection {
+            title: Translation.tr("Touchpad")
+
+            ConfigSwitch {
+                buttonIcon: "swap_vert"
+                text: Translation.tr("Natural scroll")
+                checked: naturalScroll.value === 1
+                onCheckedChanged: {
+                    const newValue = checked ? 1 : 0
+                    if (naturalScroll.ready && naturalScroll.value !== newValue) HyprlandConfig.set("input:touchpad:natural_scroll", newValue)
+                }
+            }
+
+            ConfigSwitch {
+                buttonIcon: "keyboard_hide"
+                text: Translation.tr("Disable while typing")
+                checked: disableTyping.value === 1
+                onCheckedChanged: {
+                    const newValue = checked ? 1 : 0
+                    if (disableTyping.ready && disableTyping.value !== newValue) HyprlandConfig.set("input:touchpad:disable_while_typing", newValue)
+                }
+            }
+
+            ConfigSwitch {
+                buttonIcon: "touch_app"
+                text: Translation.tr("Clickfinger behavior")
+                checked: clickfinger.value === 1
+                onCheckedChanged: {
+                    const newValue = checked ? 1 : 0
+                    if (clickfinger.ready && clickfinger.value !== newValue) HyprlandConfig.set("input:touchpad:clickfinger_behavior", newValue)
+                }
+            }
+
+            ConfigSpinBox {
+                icon: "swipe"
+                text: Translation.tr("Scroll factor")
+                value: Math.round((scrollFactor.value ?? 0.7) * 10)
+                from: 1; to: 30; stepSize: 1
+                onValueChanged: {
+                    const newValue = value / 10.0
+                    if (scrollFactor.ready && scrollFactor.value !== newValue) HyprlandConfig.set("input:touchpad:scroll_factor", newValue)
+                }
+            }
+        }
+    }
+
+    // ── Visual & Aesthetics ──────────────────────────────────────────────────
+    ContentSection {
+        icon: "deblur"
+        shape: MaterialShape.Shape.PixelCircle
+        title: Translation.tr("Visual & Aesthetics")
+
+        ConfigSpinBox {
+            icon: "rounded_corner"
+            text: Translation.tr("Window Rounding")
+            value: rounding.value ?? 0
+            from: 0; to: 30; stepSize: 1
+            onValueChanged: if (rounding.ready && rounding.value !== value) HyprlandConfig.set("decoration:rounding", value)
+        }
+
+        ConfigSpinBox {
+            icon: "opacity"
+            text: Translation.tr("Active Opacity")
+            value: Math.round((activeOpacity.value ?? 1.0) * 100)
+            from: 10; to: 100; stepSize: 5
+            onValueChanged: {
+                const newValue = value / 100.0
+                if (activeOpacity.ready && activeOpacity.value !== newValue) HyprlandConfig.set("decoration:active_opacity", newValue)
+            }
+        }
+
+        ConfigSpinBox {
+            icon: "opacity"
+            text: Translation.tr("Inactive Opacity")
+            value: Math.round((inactiveOpacity.value ?? 1.0) * 100)
+            from: 10; to: 100; stepSize: 5
+            onValueChanged: {
+                const newValue = value / 100.0
+                if (inactiveOpacity.ready && inactiveOpacity.value !== newValue) HyprlandConfig.set("decoration:inactive_opacity", newValue)
+            }
+        }
+
+        ConfigSpinBox {
+            icon: "opacity"
+            text: Translation.tr("Fullscreen Opacity")
+            value: Math.round((fullscreenOpacity.value ?? 1.0) * 100)
+            from: 10; to: 100; stepSize: 5
+            onValueChanged: {
+                const newValue = value / 100.0
+                if (fullscreenOpacity.ready && fullscreenOpacity.value !== newValue) HyprlandConfig.set("decoration:fullscreen_opacity", newValue)
+            }
+        }
+
+        ConfigSwitch {
+            buttonIcon: "blur_on"
+            text: Translation.tr("Blur")
+            checked: blurEnabled.value === 1
+            onCheckedChanged: {
+                const newValue = checked ? 1 : 0
+                if (blurEnabled.ready && blurEnabled.value !== newValue) HyprlandConfig.set("decoration:blur:enabled", newValue)
+            }
+        }
+
+        ConfigSpinBox {
+            icon: "blur_circular"
+            text: Translation.tr("Blur Size")
+            value: blurSize.value ?? 1
+            from: 1; to: 20; stepSize: 1
+            onValueChanged: if (blurSize.ready && blurSize.value !== value) HyprlandConfig.set("decoration:blur:size", value)
+        }
+
+        ConfigSpinBox {
+            icon: "layers"
+            text: Translation.tr("Blur Passes")
+            value: blurPasses.value ?? 1
+            from: 1; to: 6; stepSize: 1
+            onValueChanged: if (blurPasses.ready && blurPasses.value !== value) HyprlandConfig.set("decoration:blur:passes", value)
+        }
+
+        ConfigSpinBox {
+            icon: "border_outer"
+            text: Translation.tr("Border Size")
+            value: borderSize.value ?? 1
+            from: 0; to: 10; stepSize: 1
+            onValueChanged: if (borderSize.ready && borderSize.value !== value) HyprlandConfig.set("general:border_size", value)
+        }
+
+        ConfigSpinBox {
+            icon: "margin"
+            text: Translation.tr("Gaps In")
+            value: gapsIn.value ?? 0
+            from: 0; to: 40; stepSize: 1
+            onValueChanged: if (gapsIn.ready && gapsIn.value !== value) HyprlandConfig.set("general:gaps_in", value)
+        }
+
+        ConfigSpinBox {
+            icon: "open_in_full"
+            text: Translation.tr("Gaps Out")
+            value: gapsOut.value ?? 0
+            from: 0; to: 60; stepSize: 1
+            onValueChanged: if (gapsOut.ready && gapsOut.value !== value) HyprlandConfig.set("general:gaps_out", value)
+        }
+    }
+
+    // ── Animations ───────────────────────────────────────────────────────────
+    ContentSection {
+        icon: "animation"
+        shape: MaterialShape.Shape.Oval
+        title: Translation.tr("Animations")
+
+        ConfigSwitch {
+            buttonIcon: "check"
+            text: Translation.tr("Enable Animations")
+            checked: animEnabled.value ?? true
+            onCheckedChanged: HyprlandConfig.set("animations:enabled", checked ? 1 : 0)
+        }
+
+        ContentSubsection {
+            title: Translation.tr("Animation Preset")
+
+            ConfigSelectionArray {
+                currentValue: Config.options.hyprland.animations.animation
+                
+                onSelected: newValue => {
+                    Config.options.hyprland.animations.animation = newValue;
+
+                    const presets = {
+                        "fast":   presetFast,
+                        "normal": presetNormal,
+                        "niri":   presetNiri
+                    };
+                    
+                    const content = presets[newValue] ?? "";
+
+                    if (content !== "") {
+                        saveAnimProc.command = [
+                            "bash", 
+                            "-c", 
+                            "echo '" + content + "' > ~/.config/hypr/hyprland/shellOverrides/animations.conf"
+                        ];
+                        saveAnimProc.running = true;
+                    }
+                }
+                options: [
+                    { displayName: Translation.tr("Elastic"),   icon: "move_selection_right", value: "fast" },
+                    { displayName: Translation.tr("Normal"), icon: "animation", value: "normal" },
+                    { displayName: Translation.tr("Niri Like"),   icon: "mobiledata_arrows", value: "niri" },
+                ]
+            }
+        }
+        
+        NoticeBox {
+            Layout.fillWidth: true
+            Layout.topMargin: 15
+            text: Translation.tr("Animation presets require a source line in your hyprland.conf. Add the following line to enable presets:") + "\n\nsource = ~/.config/hypr/hyprland/shellOverrides/animations.conf"
+
+            Item { Layout.fillWidth: true }
+
+            RippleButtonWithIcon {
+                id: copySourceButton
+                property bool justCopied: false
+                Layout.fillWidth: false
+                buttonRadius: Appearance.rounding.small
+                materialIcon: justCopied ? "check" : "content_copy"
+                mainText: justCopied ? Translation.tr("Copied!") : Translation.tr("Copy line")
+                onClicked: {
+                    copySourceButton.justCopied = true
+                    Quickshell.clipboardText = "source = ~/.config/hypr/hyprland/shellOverrides/animations.conf"
+                    revertSourceTimer.restart()
+                }
+                colBackground: ColorUtils.transparentize(Appearance.colors.colPrimaryContainer)
+                colBackgroundHover: Appearance.colors.colPrimaryContainerHover
+                colRipple: Appearance.colors.colPrimaryContainerActive
+                Timer {
+                    id: revertSourceTimer
+                    interval: 1500
+                    onTriggered: copySourceButton.justCopied = false
+                }
+            }
+        }
+        
+        Process {
+            id: saveAnimProc
+            onRunningChanged: if (!running) reloadAnimProc.running = true
+        }
+        Process {
+            id: reloadAnimProc
+            command: ["hyprctl", "reload"]
+        }
+    }
+}

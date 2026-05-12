@@ -1,0 +1,16 @@
+module qs.modules.ii.settings
+Settings 1.0 Settings.qml
+About 1.0 About.qml
+AdvancedConfig 1.0 AdvancedConfig.qml
+BackgroundConfig 1.0 BackgroundConfig.qml
+BarConfig 1.0 BarConfig.qml
+GeneralConfig 1.0 GeneralConfig.qml
+HyprlandConfig 1.0 HyprlandConfig.qml
+InterfaceConfig 1.0 InterfaceConfig.qml
+QuickConfig 1.0 QuickConfig.qml
+ServicesConfig 1.0 ServicesConfig.qml
+SystemAudio 1.0 SystemAudio.qml
+SystemBluetooth 1.0 SystemBluetooth.qml
+SystemConfig 1.0 SystemConfig.qml
+SystemDisplay 1.0 SystemDisplay.qml
+SystemNetwork 1.0 SystemNetwork.qml

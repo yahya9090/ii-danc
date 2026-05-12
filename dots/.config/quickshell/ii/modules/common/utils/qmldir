@@ -1,0 +1,7 @@
+module qs.modules.common.utils
+GeniusLyrics 1.0 GeniusLyrics.qml
+ImageDownloaderProcess 1.0 ImageDownloaderProcess.qml
+LrclibLyrics 1.0 LrclibLyrics.qml
+MultiTurnProcess 1.0 MultiTurnProcess.qml
+singleton ScreenshotAction 1.0 ScreenshotAction.qml
+TempScreenshotProcess 1.0 TempScreenshotProcess.qml

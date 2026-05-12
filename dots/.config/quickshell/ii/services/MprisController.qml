@@ -1,0 +1,213 @@
+pragma Singleton
+pragma ComponentBehavior: Bound
+
+// From https://git.outfoxxed.me/outfoxxed/nixnew
+// It does not have a license, but the author is okay with redistribution.
+
+import QtQml.Models
+import QtQuick
+import Quickshell
+import Quickshell.Io
+import Quickshell.Services.Mpris
+import qs.modules.common
+
+/**
+ * A service that provides easy access to the active Mpris player.
+ */
+Singleton {
+	id: root;
+	property list<MprisPlayer> allPlayers: Mpris.players.values;
+	property list<MprisPlayer> players: Array.from(allPlayers).filter(player => isRealPlayer(player));
+	property MprisPlayer pinnedPlayer: null;
+	property MprisPlayer trackedPlayer: null;
+	property MprisPlayer activePlayer: {
+		const priority = Array.from(allPlayers).find(player => player.desktopEntry === root.priorityPlayer);
+		if (priority) return priority;
+		return pinnedPlayer ?? trackedPlayer ?? (players.length > 0 ? players[0] : null);
+	}
+	signal trackChanged(reverse: bool);
+
+	property string priorityPlayer: Config.options.media.priorityPlayer;
+
+	property bool __reverse: false;
+
+	property var activeTrack;
+
+	property bool hasActivePlasmaIntegration: false
+    Process {
+        id: plasmaIntegrationAvailabilityCheckProc
+        running: true
+        command: ["bash", "-c", "command -v plasma-browser-integration-host"]
+        onExited: (exitCode, exitStatus) => {
+            root.hasActivePlasmaIntegration = (exitCode === 0);
+        }
+    }
+	function isRealPlayer(player) {
+        if (!Config.options.media.filterDuplicatePlayers) {
+            return true;
+        }
+        const dbusName = player.dbusName || "";
+        return (
+            // Remove native browser buses only if plasma-browser-integration is actually active on D-Bus
+            !(root.hasActivePlasmaIntegration && dbusName.startsWith('org.mpris.MediaPlayer2.firefox')) && !(root.hasActivePlasmaIntegration && dbusName.startsWith('org.mpris.MediaPlayer2.chromium')) &&
+            // playerctld just copies other buses and we don't need duplicates
+            !dbusName.startsWith('org.mpris.MediaPlayer2.playerctld') &&
+            // Non-instance mpd bus
+            !(dbusName.endsWith('.mpd') && !dbusName.endsWith('MediaPlayer2.mpd')));
+    }
+
+	// Original stuff from fox below
+	Instantiator {
+		model: Mpris.players;
+
+		Connections {
+			required property MprisPlayer modelData;
+			target: modelData;
+
+			Component.onCompleted: {
+				if (root.trackedPlayer === null || modelData.isPlaying) {
+					root.trackedPlayer = modelData;
+				}
+			}
+
+			Component.onDestruction: {
+				if (root.trackedPlayer === modelData) {
+					root.trackedPlayer = null;
+					for (const player of root.players) {
+						if (player.isPlaying) {
+							root.trackedPlayer = player;
+							break;
+						}
+					}
+
+					if (root.trackedPlayer === null && root.players.length > 0) {
+						root.trackedPlayer = root.players[0];
+					}
+				}
+
+				if (root.pinnedPlayer === modelData) {
+					root.pinnedPlayer = null;
+				}
+			}
+
+			function onPlaybackStateChanged() {
+				if (modelData && modelData.isPlaying && root.trackedPlayer !== modelData) {
+					root.trackedPlayer = modelData;
+				}
+			}
+		}
+	}
+
+	Connections {
+		target: activePlayer
+
+		function onPostTrackChanged() {
+			root.updateTrack();
+		}
+
+		function onTrackArtUrlChanged() {
+			// console.log("arturl:", activePlayer.trackArtUrl)
+			// root.updateTrack();
+			if (root.activePlayer.uniqueId == root.activeTrack.uniqueId && root.activePlayer.trackArtUrl != root.activeTrack.artUrl) {
+				// cantata likes to send cover updates *BEFORE* updating the track info.
+				// as such, art url changes shouldn't be able to break the reverse animation
+				const r = root.__reverse;
+				root.updateTrack();
+				root.__reverse = r;
+
+			}
+		}
+	}
+
+	onActivePlayerChanged: {
+		this.updateTrack();
+	}
+
+	function updateTrack() {
+		//console.log(`update: ${this.activePlayer?.trackTitle ?? ""} : ${this.activePlayer?.trackArtists}`)
+		this.activeTrack = {
+			uniqueId: this.activePlayer?.uniqueId ?? 0,
+			artUrl: this.activePlayer?.trackArtUrl ?? "",
+			title: this.activePlayer?.trackTitle || Translation.tr("Unknown Title"),
+			artist: this.activePlayer?.trackArtist || Translation.tr("Unknown Artist"),
+			album: this.activePlayer?.trackAlbum || Translation.tr("Unknown Album"),
+		};
+
+        // Force reactive properties to update
+        if (this.activePlayer) {
+            this.activePlayer.positionChanged();
+        }
+
+		this.trackChanged(__reverse);
+		this.__reverse = false;
+	}
+
+	property bool isPlaying: this.activePlayer && this.activePlayer.isPlaying;
+	property bool canTogglePlaying: this.activePlayer?.canTogglePlaying ?? false;
+	function togglePlaying() {
+		if (this.canTogglePlaying) this.activePlayer.togglePlaying();
+	}
+
+	property bool canGoPrevious: this.activePlayer?.canGoPrevious ?? false;
+	function previous() {
+		if (this.canGoPrevious) {
+			this.__reverse = true;
+			this.activePlayer.previous();
+		}
+	}
+
+	property bool canGoNext: this.activePlayer?.canGoNext ?? false;
+	function next() {
+		if (this.canGoNext) {
+			this.__reverse = false;
+			this.activePlayer.next();
+		}
+	}
+
+	property bool canChangeVolume: this.activePlayer && this.activePlayer.volumeSupported && this.activePlayer.canControl;
+
+	property bool loopSupported: this.activePlayer && this.activePlayer.loopSupported && this.activePlayer.canControl;
+	property var loopState: this.activePlayer?.loopState ?? MprisLoopState.None;
+	function setLoopState(loopState: var) {
+		if (this.loopSupported) {
+			this.activePlayer.loopState = loopState;
+		}
+	}
+
+	property bool shuffleSupported: this.activePlayer && this.activePlayer.shuffleSupported && this.activePlayer.canControl;
+	property bool hasShuffle: this.activePlayer?.shuffle ?? false;
+	function setShuffle(shuffle: bool) {
+		if (this.shuffleSupported) {
+			this.activePlayer.shuffle = shuffle;
+		}
+	}
+
+	function setActivePlayer(player: MprisPlayer) {
+		const targetPlayer = player ?? (allPlayers.length > 0 ? allPlayers[0] : null);
+		console.log(`[Mpris] Active player ${targetPlayer} << ${activePlayer}`)
+
+		if (targetPlayer && this.activePlayer) {
+			const allPlayersList = Array.from(allPlayers);
+			this.__reverse = allPlayersList.indexOf(targetPlayer) < allPlayersList.indexOf(this.activePlayer);
+		} else {
+			// always animate forward if going to null
+			this.__reverse = false;
+		}
+
+		this.pinnedPlayer = player;
+	}
+
+	IpcHandler {
+		target: "mpris"
+
+		function pauseAll(): void {
+			for (const player of Mpris.players.values) {
+				if (player.canPause) player.pause();
+			}
+		}
+
+		function playPause(): void { root.togglePlaying(); }
+		function previous(): void { root.previous(); }
+		function next(): void { root.next(); }
+	}
+}

@@ -1,0 +1,430 @@
+import qs
+import qs.services
+import qs.modules.common
+import qs.modules.common.widgets
+import QtQuick
+import QtQuick.Controls
+import QtQuick.Layouts
+import Quickshell
+import Quickshell.Bluetooth
+import Quickshell.Hyprland
+import Qt5Compat.GraphicalEffects
+import Qt.labs.platform
+import qs.modules.common.functions
+
+import qs.modules.ii.sidebarDashboard.quickToggles
+import qs.modules.ii.sidebarDashboard.quickToggles.classicStyle
+
+import qs.modules.ii.sidebarDashboard.bluetoothDevices
+import qs.modules.ii.sidebarDashboard.nightLight
+import qs.modules.ii.sidebarDashboard.volumeMixer
+import qs.modules.ii.sidebarDashboard.wifiNetworks
+
+Item {
+    id: root
+    property int sidebarWidth: Appearance.sizes.sidebarWidth
+    property int sidebarPadding: 10
+    property string settingsQmlPath: Quickshell.shellPath("settings.qml")
+    property bool showAudioOutputDialog: false
+    property bool showAudioInputDialog: false
+    property bool showBluetoothDialog: false
+    property bool showNightLightDialog: false
+    property bool showWifiDialog: false
+    property bool editMode: false
+
+    FileDialog {
+        id: profilePicDialog
+        title: Translation.tr("Select Profile Picture")
+        nameFilters: ["Images (*.png *.jpg *.jpeg *.svg)"]
+        onAccepted: {
+            const path = FileUtils.trimFileProtocol(file.toString());
+            const dest = Quickshell.shellPath("assets/profile.png");
+            // Copy the file to assets/profile.png
+            Quickshell.execDetached(["cp", path, dest]);
+            // Force reload by changing a property or just notifying
+            Persistent.states.settings.profilePicture = Date.now().toString();
+        }
+    }
+
+    Connections {
+        target: GlobalStates
+        function onSidebarRightOpenChanged() {
+            if (!GlobalStates.sidebarRightOpen) {
+                root.showWifiDialog = false;
+                root.showBluetoothDialog = false;
+                root.showAudioOutputDialog = false;
+                root.showAudioInputDialog = false;
+            }
+        }
+    }
+
+    implicitHeight: sidebarRightBackground.implicitHeight
+    implicitWidth: sidebarRightBackground.implicitWidth
+
+    StyledRectangularShadow {
+        target: sidebarRightBackground
+    }
+    Rectangle {
+        id: sidebarRightBackground
+
+        anchors.fill: parent
+        implicitHeight: parent.height - Appearance.sizes.hyprlandGapsOut * 2
+        implicitWidth: sidebarWidth - Appearance.sizes.hyprlandGapsOut * 2
+        color: Appearance.colors.colLayer0
+        border.width: 1
+        border.color: Appearance.colors.colLayer0Border
+        radius: Appearance.rounding.screenRounding - Appearance.sizes.hyprlandGapsOut + 1
+
+        ColumnLayout {
+            anchors.fill: parent
+            anchors.margins: sidebarPadding
+            spacing: sidebarPadding
+
+            SystemButtonRow {
+                Layout.fillHeight: false
+                Layout.fillWidth: true
+                // Layout.margins: 10
+                Layout.topMargin: 5
+                Layout.bottomMargin: 0
+            }
+
+            Loader {
+                id: slidersLoader
+                Layout.fillWidth: true
+                visible: active
+                active: {
+                    const configQuickSliders = Config.options.sidebar.quickSliders
+                    if (!configQuickSliders.enable) return false
+                    if (!configQuickSliders.showMic && !configQuickSliders.showVolume && !configQuickSliders.showBrightness && !configQuickSliders.showGamma) return false;
+                    return true;
+                }
+                sourceComponent: QuickSliders {}
+            }
+
+            LoaderedQuickPanelImplementation {
+                styleName: "classic"
+                sourceComponent: ClassicQuickPanel {}
+            }
+
+            LoaderedQuickPanelImplementation {
+                styleName: "android"
+                sourceComponent: AndroidQuickPanel {
+                    editMode: root.editMode
+                }
+            }
+
+            Loader {
+                Layout.fillWidth: true
+                visible: active
+                active: Config.options.sidebar.media.enable
+                sourceComponent: SidebarPlayerControl {}
+            }
+
+            CenterWidgetGroup {
+                Layout.alignment: Qt.AlignHCenter
+                Layout.fillHeight: true
+                Layout.fillWidth: true
+            }
+
+            BottomWidgetGroup {
+                Layout.alignment: Qt.AlignHCenter
+                Layout.fillHeight: false
+                Layout.fillWidth: true
+                Layout.preferredHeight: implicitHeight
+            }
+        }
+    }
+
+    ToggleDialog {
+        shownPropertyString: "showAudioOutputDialog"
+        dialog: VolumeDialog {
+            isSink: true
+        }
+    }
+
+    ToggleDialog {
+        shownPropertyString: "showAudioInputDialog"
+        dialog: VolumeDialog {
+            isSink: false
+        }
+    }
+
+    ToggleDialog {
+        shownPropertyString: "showBluetoothDialog"
+        dialog: BluetoothDialog {}
+        onShownChanged: {
+            if (!shown) {
+                Bluetooth.defaultAdapter.discovering = false;
+            } else {
+                Bluetooth.defaultAdapter.enabled = true;
+                Bluetooth.defaultAdapter.discovering = true;
+            }
+        }
+    }
+
+    ToggleDialog {
+        shownPropertyString: "showNightLightDialog"
+        dialog: NightLightDialog {}
+    }
+
+    ToggleDialog {
+        shownPropertyString: "showWifiDialog"
+        dialog: WifiDialog {}
+        onShownChanged: {
+            if (!shown) return;
+            Network.enableWifi();
+            Network.rescanWifi();
+        }
+    }
+
+    component ToggleDialog: Loader {
+        id: toggleDialogLoader
+        required property string shownPropertyString
+        property alias dialog: toggleDialogLoader.sourceComponent
+        readonly property bool shown: root[shownPropertyString]
+        anchors.fill: parent
+
+        onShownChanged: if (shown) toggleDialogLoader.active = true;
+        active: shown
+        onActiveChanged: {
+            if (active) {
+                item.show = true;
+                item.forceActiveFocus();
+            }
+        }
+        Connections {
+            target: toggleDialogLoader.item
+            function onDismiss() {
+                toggleDialogLoader.item.show = false
+                root[toggleDialogLoader.shownPropertyString] = false;
+            }
+            function onVisibleChanged() {
+                if (!toggleDialogLoader.item.visible && !root[toggleDialogLoader.shownPropertyString]) toggleDialogLoader.active = false;
+            }
+        }
+    }
+
+    component LoaderedQuickPanelImplementation: Loader {
+        id: quickPanelImplLoader
+        required property string styleName
+        Layout.alignment: item?.Layout.alignment ?? Qt.AlignHCenter
+        Layout.fillWidth: item?.Layout.fillWidth ?? false
+        visible: active
+        active: Config.options.sidebar.quickToggles.style === styleName
+        Connections {
+            target: quickPanelImplLoader.item
+            function onOpenAudioOutputDialog() {
+                root.showAudioOutputDialog = true;
+            }
+            function onOpenAudioInputDialog() {
+                root.showAudioInputDialog = true;
+            }
+            function onOpenBluetoothDialog() {
+                root.showBluetoothDialog = true;
+            }
+            function onOpenNightLightDialog() {
+                root.showNightLightDialog = true;
+            }
+            function onOpenWifiDialog() {
+                root.showWifiDialog = true;
+            }
+        }
+    }
+
+    component SystemButtonRow: Item {
+        implicitHeight: Math.max(uptimeContainer.implicitHeight, systemButtonsRow.implicitHeight)
+
+        Rectangle {
+            id: uptimeContainer
+            anchors {
+                top: parent.top
+                bottom: parent.bottom
+                left: parent.left
+            }
+            color: Appearance.colors.colLayer1
+            readonly property int fullRadius: Config.options.appearance.sharpMode ? Appearance.rounding.full : height / 2
+            radius: fullRadius
+            implicitWidth: uptimeRow.implicitWidth + 28
+            implicitHeight: uptimeRow.implicitHeight + 4
+            
+            Row {
+                id: uptimeRow
+                anchors {
+                    left: parent.left
+                    verticalCenter: parent.verticalCenter
+                    leftMargin: 6
+                    }
+                spacing: 4
+
+                // PROFILE PICTURE
+                Item {
+                    id: profilePicContainer
+                    
+                    anchors.verticalCenter: parent.verticalCenter
+                    width: 40
+                    height: 40
+
+                    Image {
+                        id: profilePicSource
+                        anchors.fill: parent
+                        source: "file://" + Quickshell.shellPath("assets/profile.png") + "?" + Persistent.states.settings.profilePicture
+                        sourceSize.width: parent.width
+                        sourceSize.height: parent.height
+                        fillMode: Image.PreserveAspectCrop
+                        visible: false
+                    }
+
+                    Rectangle {
+                        id: profilePicMask
+                        anchors.fill: parent
+                        radius: width / 2
+                        visible: false
+                    }
+
+                    OpacityMask {
+                        anchors.fill: parent
+                        source: profilePicSource
+                        maskSource: profilePicMask
+                    }
+
+                    RippleButton {
+                        anchors.fill: parent
+                        visible: root.editMode
+                        colBackground: "transparent"
+                        onClicked: profilePicDialog.open()
+                        MaterialSymbol {
+                            anchors.centerIn: parent
+                            text: "add_a_photo"
+                            color: "white"
+                            iconSize: 20
+                        }
+                    }
+                }
+
+                Item {
+                    anchors.verticalCenter: parent.verticalCenter
+                    implicitWidth: nameText.visible ? nameText.implicitWidth : nameEdit.implicitWidth
+                    implicitHeight: Math.max(nameText.implicitHeight, nameEdit.implicitHeight)
+
+                    StyledText {
+                        id: nameText
+                        anchors.verticalCenter: parent.verticalCenter
+                        font.pixelSize: Appearance.font.pixelSize.small
+                        color: Appearance.colors.colOnLayer0
+                        text: "Olá, " + (Persistent.states.settings.profileName || "User")
+                        font.bold: true
+                        visible: !root.editMode
+                    }
+
+                    MaterialTextArea {
+                        id: nameEdit
+                        anchors.verticalCenter: parent.verticalCenter
+                        font.pixelSize: Appearance.font.pixelSize.small
+                        text: Persistent.states.settings.profileName || "User"
+                        visible: root.editMode
+                        padding: 2
+                        background: null
+                        onTextChanged: {
+                            if (root.editMode) {
+                                Persistent.states.settings.profileName = text;
+                            }
+                        }
+                    }
+                }
+                
+            }
+        }
+
+        ButtonGroup {
+            id: systemButtonsRow
+            anchors {
+                top: parent.top
+                bottom: parent.bottom
+                right: parent.right
+            }
+            color: Appearance.colors.colLayer1
+            padding: 4
+
+            QuickToggleButton {
+                toggled: root.editMode
+                visible: Config.options.sidebar.quickToggles.style === "android"
+                buttonIcon: "edit"
+                onClicked: root.editMode = !root.editMode
+                StyledToolTip {
+                    text: Translation.tr("Edit quick toggles") + (root.editMode ? Translation.tr("\nLMB to enable/disable\nRMB to toggle size\nScroll to swap position") : "")
+                }
+            }
+            QuickToggleButton {
+                toggled: false
+                buttonIcon: "restart_alt"
+                onClicked: {
+                    Hyprland.dispatch("reload");
+                    Quickshell.reload(true);
+                }
+                StyledToolTip {
+                    text: Translation.tr("Reload Hyprland & Quickshell")
+                }
+            }
+            QuickToggleButton {
+                toggled: false
+                buttonIcon: "settings"
+                onClicked: {
+                    GlobalStates.sidebarRightOpen = false;
+                    Quickshell.execDetached(["qs", "-p", root.settingsQmlPath]);
+                }
+                StyledToolTip {
+                    text: Translation.tr("Settings")
+                }
+            }
+            QuickToggleButton {
+                id: updateButton
+                toggled: confirm
+                property bool confirm: false
+                property string updateScript: Quickshell.env("HOME") + "/.local/share/ii-vynx/update-with-customs.sh"
+                buttonIcon: confirm ? "check" : "download"
+                Timer {
+                    id: confirmTimer
+                    interval: 2000
+                    onTriggered: {
+                        confirmTimer.stop();
+                        updateButton.confirm = false
+                    }
+                }
+                onClicked: {
+                    if (confirm) {
+                        GlobalStates.sidebarRightOpen = false;
+                        // Wrapper: roda dry-run primeiro, se exit 0 aplica de verdade
+                        const script = updateScript;
+                        const wrapperCmd = [
+                            `echo '━━━ ii-vynx: Verificando conflitos (dry-run)... ━━━'`,
+                            `bash '${script}' --dry-run -v`,
+                            `echo ''`,
+                            `echo '━━━ Sem conflitos! Aplicando update... ━━━'`,
+                            `echo ''`,
+                            `bash '${script}' -v`,
+                        ].join(" && ");
+                        const fullCmd = `${wrapperCmd} || echo -e '\\n⚠ Conflitos ou erro detectado. Update NÃO aplicado.'`;
+                        Quickshell.execDetached([Config.options.apps.terminal, "-e", "bash", "-c", fullCmd + "; echo ''; echo 'Pressione Enter para fechar...'; read"]);
+                    } else {
+                        confirm = true
+                        confirmTimer.start()
+                    }
+                    
+                }
+                StyledToolTip {
+                    text: Translation.tr("Update ii-vynx (preserving your customizations)")
+                }
+            }
+            QuickToggleButton {
+                toggled: false
+                buttonIcon: "power_settings_new"
+                onClicked: {
+                    GlobalStates.sessionOpen = true;
+                }
+                StyledToolTip {
+                    text: Translation.tr("Session")
+                }
+            }
+        }
+    }
+}

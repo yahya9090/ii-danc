@@ -1,0 +1,34 @@
+[32m  INFO[0m: Launching config: "/home/danc/ii-danc/dots/.config/quickshell/ii/shell.qml"
+[32m  INFO[0m: Shell ID: "4ba9c56c0c0e83c95b713bddc4467fc5" Path ID "4ba9c56c0c0e83c95b713bddc4467fc5"
+[32m  INFO[0m: Saving logs to "/run/user/1000/quickshell/by-id/sqcx606et/log.qslog"
+[33m  WARN[0m: QSettings::value: Empty key passed
+[33m  WARN[97m qt.qml.propertyCache.append[0m: Member enabled of the object LrclibLyrics_QMLTYPE_125 overrides a member of the base object. Consider renaming it or adding final or override specifier
+[33m  WARN[97m qt.qml.propertyCache.append[0m: Member implicitWidth of the object QQuickItem_QML_1974 overrides a member of the base object. Consider renaming it or adding final or override specifier
+[33m  WARN[97m qt.qml.propertyCache.append[0m: Member implicitHeight of the object QQuickItem_QML_1974 overrides a member of the base object. Consider renaming it or adding final or override specifier
+[33m  WARN[97m qt.qml.propertyCache.append[0m: Member data of the object Toolbar_QMLTYPE_2030 overrides a member of the base object. Consider renaming it or adding final or override specifier
+[33m  WARN[97m qt.qml.propertyCache.append[0m: Member data of the object IconIndicator overrides a member of the base object. Consider renaming it or adding final or override specifier
+[33m  WARN[97m qt.qml.propertyCache.append[0m: Member implicitWidth of the object QQuickItem_QML_2290 overrides a member of the base object. Consider renaming it or adding final or override specifier
+[33m  WARN[97m qt.qml.propertyCache.append[0m: Member implicitHeight of the object QQuickItem_QML_2290 overrides a member of the base object. Consider renaming it or adding final or override specifier
+[33m  WARN[97m qt.qml.propertyCache.append[0m: Member data of the object ButtonGroup_QMLTYPE_2363 overrides a member of the base object. Consider renaming it or adding final or override specifier
+[33m  WARN[97m qt.qml.propertyCache.append[0m: Member data of the object WToolbar_QMLTYPE_2413 overrides a member of the base object. Consider renaming it or adding final or override specifier
+[33m  WARN[97m qt.qml.propertyCache.append[0m: Member data of the object PageSection overrides a member of the base object. Consider renaming it or adding final or override specifier
+[33m  WARN[97m qt.qml.propertyCache.append[0m: Member data of the object NavigationRailTabArray_QMLTYPE_2626 overrides a member of the base object. Consider renaming it or adding final or override specifier
+[33m  WARN[97m qt.qml.propertyCache.append[0m: Member data of the object WindowDialog_QMLTYPE_2642 overrides a member of the base object. Consider renaming it or adding final or override specifier
+[33m  WARN[97m qt.qml.propertyCache.append[0m: Member implicitWidth of the object WrapperRectangle_QMLTYPE_2959 overrides a member of the base object. Consider renaming it or adding final or override specifier
+[33m  WARN[97m qt.qml.propertyCache.append[0m: Member implicitHeight of the object WrapperRectangle_QMLTYPE_2959 overrides a member of the base object. Consider renaming it or adding final or override specifier
+[32m  INFO[0m: Configuration Loaded
+[34m DEBUG[97m qml[0m: [Translation] Language changed to en_US
+[33m  WARN[97m quickshell.service.notifications[0m: Could not register notification server at org.freedesktop.Notifications, presumably because one is already registered.
+[33m  WARN[97m quickshell.service.notifications[0m: Registration will be attempted again if the active service is unregistered.
+[32m  INFO[97m qml[0m: [WeatherService] Starting the GPS service.
+[34m DEBUG[97m qml[0m: [GlobalFocusGrab] Initialized
+[33m  WARN[97m scene[0m: QML TranslationReader at @services/Translation.qml[68:5]: Read of /home/danc/.config/illogical-impulse/translations/en_US.json failed: File does not exist.
+[34m DEBUG[97m qml[0m: [Notifications] File loaded
+[33m  WARN[97m scene[0m: QML JsonAdapter at @modules/common/Persistent.qml[56:18]: Failed to deserialize property popupRect: expected QRectF but got std::nullptr_t
+[34m DEBUG[97m qml[0m: [To Do] File loaded
+[34m DEBUG[97m qml[0m: [Cookie clock] Setting clock preset for category: abstract
+[33m  WARN[0m: Could not attach Keys property to:  qs::wayland::layershell::WaylandPanelInterface_QML_3197(0x7f3c297f45c0)  is not an Item
+[34m DEBUG[97m qml[0m: [Updates] Checking for system updates
+[33m  WARN[97m quickshell.service.polkit.listener[0m: failed to register listener: GDBus.Error:org.freedesktop.PolicyKit1.Error.Failed: An authentication agent already exists for the given subject
+[33m  WARN[97m quickshell.service.polkit[0m: failed to register listener on path "/org/quickshell/PolkitAgent"
+[34m DEBUG[97m qml[0m: [TickTick] No access token found in .env. Service disabled.

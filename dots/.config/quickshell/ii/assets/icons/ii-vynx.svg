@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   width="99.99987"
+   height="101.74"
+   viewBox="0 0 1645 1663.48"
+   fill="none"
+   version="1.1"
+   style=""
+   id="svg8"
+   sodipodi:docname="jj.svg"
+   inkscape:version="1.4.3 (0d15f75042, 2025-12-25)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview8"
+     pagecolor="#ffffff"
+     bordercolor="#000000"
+     borderopacity="0.25"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     inkscape:zoom="7.4529151"
+     inkscape:cx="44.948855"
+     inkscape:cy="36.227435"
+     inkscape:window-width="1888"
+     inkscape:window-height="1018"
+     inkscape:window-x="0"
+     inkscape:window-y="0"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="g8" />
+  <defs
+     id="defs4">
+    <linearGradient
+       id="paint0_linear_2052_347"
+       x1="328"
+       y1="1400"
+       x2="1422.5"
+       y2="240.5"
+       gradientUnits="userSpaceOnUse">
+      <stop
+         stop-color="#38dfc0"
+         id="stop1" />
+      <stop
+         offset="1"
+         stop-color="#66d9b3"
+         id="stop2" />
+    </linearGradient>
+    <linearGradient
+       id="paint1_linear_2052_347"
+       x1="634.23102"
+       y1="1083"
+       x2="1057.24"
+       y2="520.16998"
+       gradientUnits="userSpaceOnUse">
+      <stop
+         stop-color="#38c3a7"
+         id="stop3" />
+      <stop
+         offset="1"
+         stop-color="#3de6ac"
+         id="stop4" />
+    </linearGradient>
+    <clipPath
+       id="clip0_2052_347">
+      <rect
+         width="1635"
+         height="1635"
+         fill="white"
+         id="rect4" />
+    </clipPath>
+    <path
+       id="textCircle"
+       d="M 817.5,817.5 m -720,0 a 720,720 0 1,1 1440,0 a 720,720 0 1,1 -1440,0" />
+  </defs>
+  <g
+     clip-path="url(#clip0_2052_347)"
+     style="fill:none;stroke:none;color:rgb(251, 251, 254);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:&quot;Anthropic Sans&quot;, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto"
+     id="g8">
+    <circle
+       cx="-817.5"
+       cy="817.5"
+       r="817.5"
+       fill="#1e202b"
+       style="color:#fbfbfe;font-weight:400;font-size:16px;font-family:'Anthropic Sans', '-apple-system', BlinkMacSystemFont, 'Segoe UI', sans-serif;dominant-baseline:auto;text-anchor:start;opacity:1;fill:#1e202b;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter"
+       id="circle4"
+       transform="scale(-1,1)" />
+    <circle
+       cx="380.07501"
+       cy="1251.42"
+       r="55.947601"
+       transform="rotate(131.714 380.075 1251.42)"
+       fill="#51debd"
+       style="fill:rgb(81, 222, 189);stroke:none;color:rgb(251, 251, 254);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:&quot;Anthropic Sans&quot;, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto"
+       id="circle5" />
+    <circle
+       cx="518.36798"
+       cy="1096.03"
+       r="91.282997"
+       transform="rotate(167 518.368 1096.03)"
+       fill="#51debd"
+       style="fill:rgb(81, 222, 189);stroke:none;color:rgb(251, 251, 254);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:&quot;Anthropic Sans&quot;, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto"
+       id="circle6" />
+    <ellipse
+       cx="639.95898"
+       cy="1359.28"
+       rx="111.895"
+       ry="110.423"
+       transform="rotate(167 639.959 1359.28)"
+       fill="#51debd"
+       style="fill:rgb(81, 222, 189);stroke:none;color:rgb(251, 251, 254);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:&quot;Anthropic Sans&quot;, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto"
+       id="ellipse6" />
+    <path
+       d="m817.5 1446c0 22.09 17.925 40.12 39.977 38.8 128.601-7.7 252.553-52.43 356.713-129.22 114.91-84.72 199.68-203.99 241.9-340.37 42.23-136.376 39.68-282.688-7.26-417.514C1401.89 462.871 1313.02 346.614 1195.23 265.947 1077.44 185.279 936.924 144.439 794.247 149.405 651.57 154.37 514.23 204.882 402.335 293.543 290.441 382.205 209.868 504.359 172.415 642.122c-33.947 124.867-30.854 256.612 8.447 379.298 6.739 21.04 30.033 31.24 50.63 23.25L392.68 982.187c20.597-7.985 30.621-31.123 24.652-52.393-20.233-72.099-20.675-148.592-.899-221.331 23.285-85.651 73.38-161.598 142.948-216.721 69.568-55.124 154.956-86.528 243.662-89.615 88.706-3.088 176.071 22.304 249.307 72.457 73.23 50.153 128.48 122.433 157.67 206.258 29.18 83.825 30.76 174.791 4.51 259.58-26.25 84.788-78.95 158.948-150.4 211.618-60.67 44.73-132.152 71.97-206.69 79.16-21.99 2.12-39.94 19.83-39.94 41.92z"
+       fill="url(#paint0_linear_2052_347)"
+       style="stroke:none;color:rgb(251, 251, 254);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:&quot;Anthropic Sans&quot;, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto"
+       id="path6" />
+    <path
+       d="m1248.4 673.532-97.84-176.165c-3.36-6.054 1.09-13.478 8.01-13.369l191.22 3.026c6.75.106 10.98 7.33 7.78 13.271l-93.38 173.139c-3.38 6.26-12.34 6.315-15.79.098z"
+       fill="#1e202b"
+       stroke="#1e202b"
+       stroke-width="25"
+       style="fill:rgb(30, 32, 43);stroke:rgb(30, 32, 43);color:rgb(251, 251, 254);stroke-width:25px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:&quot;Anthropic Sans&quot;, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto"
+       id="path7" />
+    <path
+       d="m783.094 1083c-5.523 0-10-4.48-10-10V901.072c0-3.084-3.343-5.008-6.009-3.458l-148.816 86.453c-4.761 2.766-10.862 1.163-13.648-3.586l-34.539-58.865c-2.803-4.778-1.188-10.924 3.601-13.707l149.428-86.823c2.655-1.542 2.654-5.376-.001-6.918L574.155 727.702c-4.778-2.773-6.401-8.896-3.626-13.673l34.107-58.69c2.774-4.774 8.894-6.396 13.669-3.622l148.78 86.433c2.666 1.549 6.009-.375 6.009-3.459V562c0-5.523 4.477-10 10-10h67.804c5.523 0 10 4.477 10 10v172.691c0 3.084 3.343 5.008 6.01 3.459l148.782-86.433c4.77-2.774 10.89-1.152 13.67 3.622l34.1 58.684c2.78 4.779 1.15 10.905-3.63 13.677l-149.187 86.467c-2.658 1.541-2.659 5.379-.001 6.921l149.668 86.823c4.79 2.781 6.41 8.931 3.6 13.711l-34.54 58.86c-2.78 4.749-8.89 6.351-13.65 3.586L866.908 897.614c-2.667-1.55-6.01.374-6.01 3.458V1073c0 5.52-4.477 10-10 10z"
+       fill="url(#paint1_linear_2052_347)"
+       style="stroke:none;color:rgb(251, 251, 254);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:&quot;Anthropic Sans&quot;, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto"
+       id="path8" />
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:263.2px;font-family:'Adwaita Mono';-inkscape-font-specification:'Adwaita Mono';writing-mode:lr-tb;direction:ltr;fill:#59dbb7;fill-opacity:1;stroke-width:16.45;stroke-dasharray:none"
+       id="text8"
+       transform="translate(28.693508,-8.8287716)"><textPath
+         xlink:href="#circle4"
+         id="textPath8"><tspan
+           id="tspan8"
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:'Adwaita Mono';-inkscape-font-specification:'Adwaita Mono';fill:#59dbb7;fill-opacity:1;stroke-width:16.45;stroke-dasharray:none">ii-danc</tspan></textPath></text>
+  </g>
+</svg>

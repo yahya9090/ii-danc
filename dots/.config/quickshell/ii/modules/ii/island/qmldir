@@ -1,0 +1,27 @@
+module qs.modules.ii.island
+Island 1.0 Island.qml
+singleton Constants 1.0 Constants.qml
+IslandBattery 1.0 IslandBattery.qml
+IslandBatteryIcon 1.0 IslandBatteryIcon.qml
+IslandHome 1.0 IslandHome.qml
+IslandHomeCompact 1.0 IslandHomeCompact.qml
+IslandLauncher 1.0 IslandLauncher.qml
+IslandSearchBar 1.0 IslandSearchBar.qml
+IslandSearchItem 1.0 IslandSearchItem.qml
+IslandMediaArtPeek 1.0 IslandMediaArtPeek.qml
+IslandMediaCard 1.0 IslandMediaCard.qml
+IslandMediaVizPeek 1.0 IslandMediaVizPeek.qml
+IslandNotifCompact 1.0 IslandNotifCompact.qml
+IslandNotifExpanded 1.0 IslandNotifExpanded.qml
+IslandOsd 1.0 IslandOsd.qml
+IslandShadow 1.0 IslandShadow.qml
+MarqueeText 1.0 MarqueeText.qml
+MediaArtBackdrop 1.0 MediaArtBackdrop.qml
+MediaBrowserPoller 1.0 MediaBrowserPoller.qml
+MediaControls 1.0 MediaControls.qml
+MediaProgress 1.0 MediaProgress.qml
+NotchShape 1.0 NotchShape.qml
+IslandOverview 1.0 IslandOverview.qml
+IslandWorkspacesOverview 1.0 IslandWorkspacesOverview.qml
+IslandWorkspaceTile 1.0 IslandWorkspaceTile.qml
+IslandOverviewWindow 1.0 IslandOverviewWindow.qml
